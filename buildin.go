@@ -8,7 +8,7 @@ func (s IntSlice) Swap(i, j int)       { s[i], s[j] = s[j], s[i] }
 func (s IntSlice) Equal(i, j int) bool { return s[i] == s[j] }
 func (s *IntSlice) Slice(i, j int)     { *s = (*s)[i:j] }
 
-type Float64Slice []int
+type Float64Slice []float64
 
 func (s Float64Slice) Len() int            { return len(s) }
 func (s Float64Slice) Less(i, j int) bool  { return s[i] < s[j] }
@@ -16,7 +16,7 @@ func (s Float64Slice) Swap(i, j int)       { s[i], s[j] = s[j], s[i] }
 func (s Float64Slice) Equal(i, j int) bool { return s[i] == s[j] }
 func (s *Float64Slice) Slice(i, j int)     { *s = (*s)[i:j] }
 
-type StringSlice []int
+type StringSlice []string
 
 func (s StringSlice) Len() int            { return len(s) }
 func (s StringSlice) Less(i, j int) bool  { return s[i] < s[j] }

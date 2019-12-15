@@ -20,6 +20,18 @@ func TestUniq(t *testing.T) {
 				data: nil,
 			},
 		},
+		{
+			name: "IntSlice",
+			args: args{
+				data: RandomIntSlice(1000, -100, 100),
+			},
+		},
+		{
+			name: "Float64Slice",
+			args: args{
+				data: RandomFloat64Slice(1000),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
