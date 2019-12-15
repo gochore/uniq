@@ -34,13 +34,13 @@ func main() {
 		return kvs2[i].K == kvs2[j].K && kvs2[i].V == kvs2[j].V
 	}
 	fmt.Println(kvs1)
-	// [{a 1} {b 2} {a 1} {b 4} {c 5}]
+	// [{a 5} {b 2} {a 5} {b 4} {c 9}]
 	sort.Slice(kvs1, less1)
 	fmt.Println(kvs1)
 	// [{a 5} {a 5} {b 2} {b 4} {c 9}]
 	uniq.Slice(&kvs2, less2, equal2)
 	fmt.Println(kvs2)
-	//[{a 1} {b 2} {b 4} {c 5}]
+	// [{a 5} {b 2} {b 4} {c 9}]
 }
 
 type KV struct {
