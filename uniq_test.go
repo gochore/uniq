@@ -35,8 +35,8 @@ func TestUniq(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			uniq.Uniq(tt.args.data)
-			if !uniq.IsUniqed(tt.args.data) {
+			uniq.Sort(tt.args.data)
+			if !uniq.IsSorted(tt.args.data) {
 				t.Fail()
 			}
 		})
@@ -65,7 +65,7 @@ func TestSlice(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			uniq.Slice(tt.args.data, tt.args.less, tt.args.equal)
-			if !uniq.IsSliceUniqed(tt.args.data, tt.args.less, tt.args.equal) {
+			if !uniq.IsSliceSorted(tt.args.data, tt.args.less, tt.args.equal) {
 				t.Fail()
 			}
 		})

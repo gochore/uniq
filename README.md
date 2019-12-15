@@ -5,4 +5,4 @@
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/gochore/uniq)](https://github.com/gochore/uniq/blob/master/go.mod)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/gochore/uniq)](https://github.com/gochore/uniq/releases)
 
-Sort and uniq data.
+Sort and deduplicate data.
