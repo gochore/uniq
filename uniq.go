@@ -31,6 +31,9 @@ func Sort(data Interface) {
 	if rv.Kind() != reflect.Ptr {
 		panic("uniq: Sort(non-pointer " + reflect.TypeOf(data).String() + ")")
 	}
+	if data.Len() <= 1 {
+		return
+	}
 	sort.Sort(data)
 	data.Slice(0, deduplicate(data.Len(), data.Swap, data.Equal))
 }
@@ -62,6 +65,9 @@ func Slice(data interface{}, less func(i, j int) bool, equal func(i, j int) bool
 	rve := rv.Elem()
 	if rve.Kind() != reflect.Slice {
 		panic("uniq: Slice(non-slice-pointer " + reflect.TypeOf(data).String() + ")")
+	}
+	if rve.Len() <= 1 {
+		return
 	}
 
 	slice := rve.Interface()

@@ -30,6 +30,9 @@ jobs:
     - name: Test
       run: go test -v .
 
+    - name: Benchmark
+      run: go test -bench=. -benchmem -run=none
+
     - name: Vet
       run: go vet -v .
 
