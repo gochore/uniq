@@ -1,36 +1,61 @@
 package uniq_test
 
 import (
-	"math/rand"
 	"testing"
 
 	"github.com/gochore/uniq"
 )
 
 func TestUniq(t *testing.T) {
-	data := RandomIntSlice(1000, -100, 100)
-	uniq.Uniq(&data)
-	if !uniq.IsUniqed(data) {
-		t.FailNow()
+	type args struct {
+		data uniq.Interface
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "nil",
+			args: args{
+				data: nil,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			uniq.Uniq(tt.args.data)
+			if !uniq.IsUniqed(tt.args.data) {
+				t.Fail()
+			}
+		})
 	}
 }
 
 func TestSlice(t *testing.T) {
-	data := RandomIntSlice(1000, -100, 100)
-	uniq.Slice(&data, func(i, j int) bool {
-		return data[i] < data[j]
-	}, func(i, j int) bool {
-		return data[i] == data[j]
-	})
-	if !uniq.IsUniqed(data) {
-		t.FailNow()
+	type args struct {
+		data  interface{}
+		less  func(i, j int) bool
+		equal func(i, j int) bool
 	}
-}
-
-func RandomIntSlice(length, min, max int) uniq.IntSlice {
-	ret := make(uniq.IntSlice, length)
-	for i := range ret {
-		ret[i] = min + rand.Intn(max+1-min)
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "nil",
+			args: args{
+				data:  nil,
+				less:  nil,
+				equal: nil,
+			},
+		},
 	}
-	return ret
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			uniq.Slice(tt.args.data, tt.args.less, tt.args.equal)
+			if !uniq.IsSliceUniqed(tt.args.data, tt.args.less, tt.args.equal) {
+				t.Fail()
+			}
+		})
+	}
 }

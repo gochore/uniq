@@ -17,17 +17,11 @@ type EqualSorter interface {
 
 func Uniq(data Interface) {
 	sort.Sort(data)
-	data.Slice(0, deduplicate(data.Len(), data.Swap, data.Equal))
+	data.Slice(0, uniq(data.Len, data.Swap, data.Equal))
 }
 
 func IsUniqed(data EqualSorter) bool {
-	n := data.Len()
-	for i := n - 1; i > 0; i-- {
-		if data.Less(i, i-1) || data.Equal(i, i-1) {
-			return false
-		}
-	}
-	return true
+	return isUniqed(data.Len, data.Less, data.Equal)
 }
 
 func Slice(data interface{}, less func(i, j int) bool, equal func(i, j int) bool) {
@@ -35,12 +29,17 @@ func Slice(data interface{}, less func(i, j int) bool, equal func(i, j int) bool
 	slice := value.Interface()
 	sort.Slice(slice, less)
 	swapper := reflect.Swapper(slice)
-	value.Set(value.Slice(0, deduplicate(value.Len(), swapper, equal)))
+	value.Set(value.Slice(0, uniq(value.Len, swapper, equal)))
 }
 
-func deduplicate(length int, swap func(i, j int), equal func(i, j int) bool) int {
+func IsSliceUniqed(data interface{}, less func(i, j int) bool, equal func(i, j int) bool) bool {
+	value := reflect.ValueOf(data).Elem()
+	return isUniqed(value.Len, less, equal)
+}
+
+func uniq(len func() int, swap func(i, j int), equal func(i, j int) bool) int {
 	j := 0
-	for i := 1; i < length; i++ {
+	for i := 1; i < len(); i++ {
 		if equal(i, j) {
 			continue
 		}
@@ -48,4 +47,14 @@ func deduplicate(length int, swap func(i, j int), equal func(i, j int) bool) int
 		swap(i, j)
 	}
 	return j + 1
+}
+
+func isUniqed(len func() int, less func(i, j int) bool, equal func(i, j int) bool) bool {
+	n := len()
+	for i := n - 1; i > 0; i-- {
+		if less(i, i-1) || equal(i, i-1) {
+			return false
+		}
+	}
+	return true
 }
