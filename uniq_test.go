@@ -17,7 +17,7 @@ func TestSort(t *testing.T) {
 		args args
 	}{
 		{
-			name: "emtpy",
+			name: "empty",
 			args: args{
 				data: sort.IntSlice{},
 			},
@@ -67,7 +67,7 @@ func TestStable(t *testing.T) {
 		args args
 	}{
 		{
-			name: "emtpy",
+			name: "empty",
 			args: args{
 				data: sort.IntSlice{},
 			},
