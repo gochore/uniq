@@ -1,6 +1,8 @@
 package uniq_test
 
 import (
+	"reflect"
+	"sort"
 	"testing"
 
 	"github.com/gochore/uniq"
@@ -8,119 +10,108 @@ import (
 
 func TestSort(t *testing.T) {
 	type args struct {
-		data uniq.Interface
+		data sort.Interface
 	}
 	tests := []struct {
 		name string
 		args args
 	}{
 		{
-			name: "nil",
-			args: args{
-				data: nil,
-			},
-		},
-		{
 			name: "emtpy",
 			args: args{
-				data: &uniq.IntSlice{},
+				data: sort.IntSlice{},
 			},
 		},
 		{
 			name: "IntSlice",
 			args: args{
-				data: &uniq.IntSlice{1, 9, 9, 4, 0, 9, 2, 6, 2, 0, 1, 4, 0, 7, 1, 3},
+				data: sort.IntSlice{1, 9, 9, 4, 0, 9, 2, 6, 2, 0, 1, 4, 0, 7, 1, 3},
 			},
 		},
 		{
 			name: "Float64Slice",
 			args: args{
-				data: &uniq.Float64Slice{1, 9, 9, 4, 0, 9, 2, 6, 2, 0, 1, 4, 0, 7, 1, 3},
+				data: sort.Float64Slice{1, 9, 9, 4, 0, 9, 2, 6, 2, 0, 1, 4, 0, 7, 1, 3},
 			},
 		},
 		{
 			name: "StringSlice",
 			args: args{
-				data: &uniq.StringSlice{"1", "9", "9", "4", "0", "9", "2", "6", "2", "0", "1", "4", "0", "7", "1", "3"},
+				data: sort.StringSlice{"1", "9", "9", "4", "0", "9", "2", "6", "2", "0", "1", "4", "0", "7", "1", "3"},
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Log(tt.args.data)
+			defer func() {
+				t.Log(tt.args.data)
+			}()
 			uniq.Sort(tt.args.data)
+			rv := reflect.ValueOf(tt.args.data)
+			tt.args.data = rv.Slice(0, uniq.Sort(tt.args.data)).Interface().(sort.Interface)
 			if !uniq.IsSorted(tt.args.data) {
 				t.Fail()
+				t.Log(tt.args.data)
 			}
 		})
 	}
 }
 
 func TestSlice(t *testing.T) {
-	intSlice := uniq.IntSlice{1, 9, 9, 4, 0, 9, 2, 6, 2, 0, 1, 4, 0, 7, 1, 3}
+	intSlice := sort.IntSlice{1, 9, 9, 4, 0, 9, 2, 6, 2, 0, 1, 4, 0, 7, 1, 3}
 	ints := []int{1, 9, 9, 4, 0, 9, 2, 6, 2, 0, 1, 4, 0, 7, 1, 3}
 
 	type args struct {
-		data  interface{}
-		less  func(i, j int) bool
-		equal func(i, j int) bool
+		data interface{}
+		less func(i, j int) bool
 	}
 	tests := []struct {
 		name string
 		args args
 	}{
 		{
-			name: "nil",
-			args: args{
-				data:  nil,
-				less:  nil,
-				equal: nil,
-			},
-		},
-		{
 			name: "empty IntSlice",
 			args: args{
-				data:  &uniq.IntSlice{},
-				less:  nil,
-				equal: nil,
+				data: sort.IntSlice{},
+				less: nil,
 			},
 		},
 		{
 			name: "IntSlice",
 			args: args{
-				data:  &intSlice,
-				less:  intSlice.Less,
-				equal: intSlice.Equal,
+				data: intSlice,
+				less: intSlice.Less,
 			},
 		},
 		{
 			name: "[]int",
 			args: args{
-				data: &ints,
+				data: ints,
 				less: func(i, j int) bool {
 					return ints[i] < ints[j]
-				},
-				equal: func(i, j int) bool {
-					return ints[i] == ints[j]
 				},
 			},
 		},
 		{
 			name: "empty []int",
 			args: args{
-				data: func() *[]int {
-					t := []int{}
-					return &t
-				}(),
-				less:  nil,
-				equal: nil,
+				data: []int{},
+				less: nil,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			uniq.Slice(tt.args.data, tt.args.less, tt.args.equal)
-			if !uniq.IsSliceSorted(tt.args.data, tt.args.less, tt.args.equal) {
+			t.Log(tt.args.data)
+			defer func() {
+				t.Log(tt.args.data)
+			}()
+			rv := reflect.ValueOf(tt.args.data)
+			tt.args.data = rv.Slice(0, uniq.Slice(tt.args.data, tt.args.less)).Interface()
+			if !uniq.SliceIsSorted(tt.args.data, tt.args.less) {
 				t.Fail()
+				t.Log(tt.args.data)
 			}
 		})
 	}
@@ -128,6 +119,6 @@ func TestSlice(t *testing.T) {
 
 func BenchmarkSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		uniq.Sort(&uniq.IntSlice{1, 9, 9, 4, 0, 9, 2, 6, 2, 0, 1, 4, 0, 7, 1, 3})
+		uniq.Sort(&sort.IntSlice{1, 9, 9, 4, 0, 9, 2, 6, 2, 0, 1, 4, 0, 7, 1, 3})
 	}
 }

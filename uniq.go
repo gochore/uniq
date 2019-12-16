@@ -5,102 +5,37 @@ import (
 	"sort"
 )
 
-// Interface can be sorted and deduplicated by the routines in this package.
-type Interface interface {
-	EqualSorter
-	// Slice writes receiver by v[i:j].
-	Slice(i, j int)
-}
-
-// EqualSorter can be reported if sorted and deduplicated by the routines in this package.
-type EqualSorter interface {
-	sort.Interface
-	// Equal reports if the element with index i is equal with the element with index j.
-	Equal(i, j int) bool
-}
-
 // Sort sorts and deduplicated data.
-func Sort(data Interface) {
-	rv := reflect.ValueOf(data)
-	if rv.Kind() == reflect.Invalid {
-		return
-	}
-	if rv.IsZero() {
-		return
-	}
-	if rv.Kind() != reflect.Ptr {
-		panic("uniq: Sort(non-pointer " + reflect.TypeOf(data).String() + ")")
-	}
-	if data.Len() <= 1 {
-		return
-	}
+func Sort(data sort.Interface) int {
 	sort.Sort(data)
-	data.Slice(0, deduplicate(data.Len(), data.Swap, data.Equal))
+	return deduplicate(data.Len(), data.Swap, data.Less)
 }
 
 // IsSorted reports if data is sorted and deduplicated.
-func IsSorted(data EqualSorter) bool {
-	rv := reflect.ValueOf(data)
-	if rv.Kind() == reflect.Invalid {
-		return true
-	}
-	if rv.IsZero() {
-		return true
-	}
-	return isSortedAndDeduplicated(data.Len(), data.Less, data.Equal)
+func IsSorted(data sort.Interface) bool {
+	return isSortedAndDeduplicated(data.Len(), data.Less)
 }
 
-// Slice sorts and deduplicates the provided slice given the provided less function and equal function.
-func Slice(data interface{}, less func(i, j int) bool, equal func(i, j int) bool) {
+// Slice sorts and deduplicates the provided slice given the provided less function.
+func Slice(data interface{}, less func(i, j int) bool) int {
+	sort.Slice(data, less)
 	rv := reflect.ValueOf(data)
-	if rv.Kind() == reflect.Invalid {
-		return
-	}
-	if rv.IsZero() {
-		return
-	}
-	if rv.Kind() != reflect.Ptr {
-		panic("uniq: Slice(non-slice-pointer " + reflect.TypeOf(data).String() + ")")
-	}
-	rve := rv.Elem()
-	if rve.Kind() != reflect.Slice {
-		panic("uniq: Slice(non-slice-pointer " + reflect.TypeOf(data).String() + ")")
-	}
-	if rve.Len() <= 1 {
-		return
-	}
-
-	slice := rve.Interface()
-	sort.Slice(slice, less)
-	swapper := reflect.Swapper(slice)
-	rve.Set(rve.Slice(0, deduplicate(rve.Len(), swapper, equal)))
+	return deduplicate(rv.Len(), reflect.Swapper(data), less)
 }
 
-// IsSliceSorted reports if slice is sorted and deduplicated.
-func IsSliceSorted(data interface{}, less func(i, j int) bool, equal func(i, j int) bool) bool {
+// SliceIsSorted reports if slice is sorted and deduplicated.
+func SliceIsSorted(data interface{}, less func(i, j int) bool) bool {
 	rv := reflect.ValueOf(data)
-	if rv.Kind() == reflect.Invalid {
-		return true
-	}
-	if rv.IsZero() {
-		return true
-	}
-	if rv.Kind() == reflect.Ptr {
-		rv = rv.Elem()
-		if rv.IsZero() {
-			return true
-		}
-	}
-	if rv.Kind() != reflect.Slice {
-		panic("uniq: IsSliceSorted(non-slice " + reflect.TypeOf(data).String() + ")")
-	}
-	return isSortedAndDeduplicated(rv.Len(), less, equal)
+	return isSortedAndDeduplicated(rv.Len(), less)
 }
 
-func deduplicate(length int, swap func(i, j int), equal func(i, j int) bool) int {
+func deduplicate(length int, swap func(i, j int), less func(i, j int) bool) int {
+	if length < 2 {
+		return length
+	}
 	j := 0
 	for i := 1; i < length; i++ {
-		if equal(i, j) {
+		if !less(i, j) && !less(j, i) {
 			continue
 		}
 		j++
@@ -109,9 +44,9 @@ func deduplicate(length int, swap func(i, j int), equal func(i, j int) bool) int
 	return j + 1
 }
 
-func isSortedAndDeduplicated(length int, less func(i, j int) bool, equal func(i, j int) bool) bool {
+func isSortedAndDeduplicated(length int, less func(i, j int) bool) bool {
 	for i := length - 1; i > 0; i-- {
-		if less(i, i-1) || equal(i, i-1) {
+		if less(i, i-1) || (!less(i, i-1) && !less(i-1, i)) {
 			return false
 		}
 	}
