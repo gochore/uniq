@@ -63,8 +63,8 @@ func TestSlice(t *testing.T) {
 	ints := []int{1, 9, 9, 4, 0, 9, 2, 6, 2, 0, 1, 4, 0, 7, 1, 3}
 
 	type args struct {
-		data interface{}
-		less func(i, j int) bool
+		slice interface{}
+		less  func(i, j int) bool
 	}
 	tests := []struct {
 		name string
@@ -73,21 +73,21 @@ func TestSlice(t *testing.T) {
 		{
 			name: "empty IntSlice",
 			args: args{
-				data: sort.IntSlice{},
-				less: nil,
+				slice: sort.IntSlice{},
+				less:  nil,
 			},
 		},
 		{
 			name: "IntSlice",
 			args: args{
-				data: intSlice,
-				less: intSlice.Less,
+				slice: intSlice,
+				less:  intSlice.Less,
 			},
 		},
 		{
 			name: "[]int",
 			args: args{
-				data: ints,
+				slice: ints,
 				less: func(i, j int) bool {
 					return ints[i] < ints[j]
 				},
@@ -96,22 +96,22 @@ func TestSlice(t *testing.T) {
 		{
 			name: "empty []int",
 			args: args{
-				data: []int{},
-				less: nil,
+				slice: []int{},
+				less:  nil,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Log(tt.args.data)
+			t.Log(tt.args.slice)
 			defer func() {
-				t.Log(tt.args.data)
+				t.Log(tt.args.slice)
 			}()
-			rv := reflect.ValueOf(tt.args.data)
-			tt.args.data = rv.Slice(0, uniq.Slice(tt.args.data, tt.args.less)).Interface()
-			if !uniq.SliceIsSorted(tt.args.data, tt.args.less) {
+			rv := reflect.ValueOf(tt.args.slice)
+			tt.args.slice = rv.Slice(0, uniq.Slice(tt.args.slice, tt.args.less)).Interface()
+			if !uniq.SliceIsSorted(tt.args.slice, tt.args.less) {
 				t.Fail()
-				t.Log(tt.args.data)
+				t.Log(tt.args.slice)
 			}
 		})
 	}

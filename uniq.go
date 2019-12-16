@@ -11,16 +11,29 @@ func Sort(data sort.Interface) int {
 	return deduplicate(data.Len(), data.Swap, data.Less)
 }
 
+// Stable sorts and deduplicates data while keeping the original order of equal elements.
+func Stable(data sort.Interface) int {
+	sort.Stable(data)
+	return deduplicate(data.Len(), data.Swap, data.Less)
+}
+
 // IsSorted reports if data is sorted and deduplicated.
 func IsSorted(data sort.Interface) bool {
 	return isSortedAndDeduplicated(data.Len(), data.Less)
 }
 
 // Slice sorts and deduplicates the provided slice given the provided less function.
-func Slice(data interface{}, less func(i, j int) bool) int {
-	sort.Slice(data, less)
-	rv := reflect.ValueOf(data)
-	return deduplicate(rv.Len(), reflect.Swapper(data), less)
+func Slice(slice interface{}, less func(i, j int) bool) int {
+	sort.Slice(slice, less)
+	rv := reflect.ValueOf(slice)
+	return deduplicate(rv.Len(), reflect.Swapper(slice), less)
+}
+
+// SliceStable sorts and deduplicates the provided slice given the provided less function while keeping the original order of equal elements.
+func SliceStable(slice interface{}, less func(i, j int) bool) int {
+	sort.SliceStable(slice, less)
+	rv := reflect.ValueOf(slice)
+	return deduplicate(rv.Len(), reflect.Swapper(slice), less)
 }
 
 // SliceIsSorted reports if slice is sorted and deduplicated.
