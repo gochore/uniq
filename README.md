@@ -1,6 +1,7 @@
 # uniq
 
-[![Go Action](https://github.com/gochore/uniq/workflows/Go/badge.svg)](https://github.com/gochore/uniq/actions)
+[![Build Status](https://travis-ci.com/gochore/uniq.svg?branch=master)](https://travis-ci.com/gochore/uniq)
+[![codecov](https://codecov.io/gh/gochore/uniq/branch/master/graph/badge.svg)](https://codecov.io/gh/gochore/uniq)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gochore/uniq)](https://goreportcard.com/report/github.com/gochore/uniq)
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/gochore/uniq)](https://github.com/gochore/uniq/blob/master/go.mod)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/gochore/uniq)](https://github.com/gochore/uniq/releases)
