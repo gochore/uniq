@@ -1,5 +1,6 @@
 # uniq
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/gochore/uniq.svg)](https://pkg.go.dev/github.com/gochore/uniq)
 [![Build Status](https://travis-ci.com/gochore/uniq.svg?branch=master)](https://travis-ci.com/gochore/uniq)
 [![codecov](https://codecov.io/gh/gochore/uniq/branch/master/graph/badge.svg)](https://codecov.io/gh/gochore/uniq)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gochore/uniq)](https://goreportcard.com/report/github.com/gochore/uniq)
