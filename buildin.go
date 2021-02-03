@@ -91,7 +91,6 @@ func Runes(s []rune) int {
 	})
 }
 
-
 // Uint8s tests whether a slice of uint8 is sorted and deduplicated in increasing order.
 func Uint8sAreSorted(s []uint8) bool {
 	return SliceIsSorted(s, func(i int, j int) bool {
