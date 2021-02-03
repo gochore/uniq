@@ -41,11 +41,9 @@ func TestInts(t *testing.T) {
 				t.Log(tt.args.s)
 			}()
 			tt.args.s = tt.args.s[:uniq.Ints(tt.args.s)]
-			if tt.args.s != nil {
-				if !uniq.IntsAreSorted(tt.args.s) {
-					t.Fail()
-					t.Log(tt.args.s)
-				}
+			if !uniq.IntsAreSorted(tt.args.s) {
+				t.Fail()
+				t.Log(tt.args.s)
 			}
 		})
 	}
@@ -91,11 +89,9 @@ func TestFloat64s(t *testing.T) {
 				t.Log(tt.args.s)
 			}()
 			tt.args.s = tt.args.s[:uniq.Float64s(tt.args.s)]
-			if tt.args.s != nil {
-				if !uniq.Float64sAreSorted(tt.args.s) {
-					t.Fail()
-					t.Log(tt.args.s)
-				}
+			if !uniq.Float64sAreSorted(tt.args.s) {
+				t.Fail()
+				t.Log(tt.args.s)
 			}
 		})
 	}
@@ -135,11 +131,9 @@ func TestStrings(t *testing.T) {
 				t.Log(tt.args.s)
 			}()
 			tt.args.s = tt.args.s[:uniq.Strings(tt.args.s)]
-			if tt.args.s != nil {
-				if !uniq.StringsAreSorted(tt.args.s) {
-					t.Fail()
-					t.Log(tt.args.s)
-				}
+			if !uniq.StringsAreSorted(tt.args.s) {
+				t.Fail()
+				t.Log(tt.args.s)
 			}
 		})
 	}
